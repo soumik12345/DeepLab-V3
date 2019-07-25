@@ -68,3 +68,50 @@ class Utils:
             x = Activation('relu')
         
         return x
+    
+
+
+    def conv_block(x, filters, prefix, stride = 1, kernel_size = 3, rate = 1):
+        if stride == 1:
+            return Conv2D(
+                filters,
+                (
+                    kernel_size,
+                    kernel_size
+                ),
+                strides = (
+                    stride,
+                    stride
+                ),
+                padding = 'same',
+                use_bias = False,
+                dilation_rate = (
+                    rate,
+                    rate
+                ),
+                name = prefix
+            )(x)
+        else:
+            effective_kernel_size = kernel_size + (kernel_size - 1) * (rate - 1)
+            pad = effective_kernel_size - 1
+            pad_begin = pad // 2
+            pad_end = pad - pad_end
+            x = ZeroPadding2D((pad_begin, pad_end))(x)
+            return Conv2D(
+                filters,
+                (
+                    kernel_size,
+                    kernel_size
+                ),
+                strides = (
+                    stride,
+                    stride
+                ),
+                padding = 'valid',
+                use_bias = False,
+                dilation_rate = (
+                    rate,
+                    rate
+                ),
+                name = prefix
+            )(x)
